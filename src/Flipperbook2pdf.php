@@ -40,7 +40,6 @@ class Flipperbook2pdf
         // Convert pages to PNG
         Cli::output('Converting pages... ', 'notice');
         $this->convert2PNG();
-        Cli::output('Done!', 'success');
 
         // Convert pages to PNG
         Cli::output('Creating PDF... ', 'notice');
@@ -59,7 +58,7 @@ class Flipperbook2pdf
     private function downloadPage($page)
     {
         $page = str_pad($page, 4, "0", STR_PAD_LEFT);
-        $url = $this->url . '/preview/files/assets/flash/pages/page' . $page . '.swf';
+        $url = $this->url . '/files/assets/flash/pages/page' . $page . '.swf';
 
         // cURL
         $ch = curl_init($url);
@@ -87,8 +86,9 @@ class Flipperbook2pdf
     private function convert2PNG()
     {
         $files = glob($this->tmpPath . '/*.swf', GLOB_BRACE);
-        foreach ($files as $file) {
+        foreach ($files as $i => $file) {
             exec('swfrender '.$file.' -o '.$this->tmpPath . basename($file, '.swf') . '.png');
+            Cli::output('Page ' . (int) ($i + 1) . ' converted!', 'success');
         }
     }
 
